@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game Teaser</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: black;
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+
+        .snake {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: limegreen;
+            border-radius: 3px;
+        }
+
+        .message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            font-size: 24px;
+            opacity: 0;
+            animation: fadeIn 3s ease-in-out 3s forwards;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            color: white;
+            text-align: center;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="message">
+    "Snake game from Nokia is coming in web 3... Stay Tuned!"
+</div>
+
+<div class="footer">
+    Solana CA : 7de4KRedPMUMuWDQYDZEBF94u1xSEN4Prc3q8vZ7pump
+</div>
+
+<script>
+    const snakeSegments = [];
+    const segmentCount = 20;
+    const segmentSize = 10;
+
+    for (let i = 0; i < segmentCount; i++) {
+        const segment = document.createElement('div');
+        segment.classList.add('snake');
+        document.body.appendChild(segment);
+        snakeSegments.push(segment);
+    }
+
+    let startX = window.innerWidth / 2;
+    let startY = window.innerHeight / 2;
+    let speed = 5; // Increased speed for faster movement
+    let direction = { x: 1, y: 0 };
+
+    function changeDirectionAtBoundary() {
+        if (startX < 0) {
+            direction.x = 1;
+            direction.y = Math.random() < 0.5 ? 1 : -1;
+        } else if (startX > window.innerWidth) {
+            direction.x = -1;
+            direction.y = Math.random() < 0.5 ? 1 : -1;
+        } else if (startY < 0) {
+            direction.y = 1;
+            direction.x = Math.random() < 0.5 ? 1 : -1;
+        } else if (startY > window.innerHeight) {
+            direction.y = -1;
+            direction.x = Math.random() < 0.5 ? 1 : -1;
+        }
+    }
+
+    function updateSnake() {
+        startX += speed * direction.x;
+        startY += speed * direction.y;
+
+        changeDirectionAtBoundary();
+
+        snakeSegments.forEach((segment, index) => {
+            const x = startX - index * segmentSize * direction.x;
+            const y = startY - index * segmentSize * direction.y;
+            segment.style.left = `${x}px`;
+            segment.style.top = `${y}px`;
+        });
+
+        requestAnimationFrame(updateSnake);
+    }
+
+    window.addEventListener('resize', () => {
+        startX = window.innerWidth / 2;
+        startY = window.innerHeight / 2;
+    });
+
+    updateSnake();
+</script>
+
+</body>
+</html>
