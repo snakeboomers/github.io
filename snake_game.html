@@ -39,10 +39,21 @@
             font-family: Arial, sans-serif;
             font-size: 18px;
             position: absolute;
-            bottom: 10px;
+            bottom: 40px;
             left: 50%;
             transform: translateX(-50%);
             color: black;
+        }
+        .note {
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            color: black;
+            max-width: 80%;
         }
     </style>
 </head>
@@ -50,6 +61,7 @@
     <div class="message">PRESS SPACE TO START. ARROW KEYS TO MOVE</div>
     <canvas id="gameCanvas" width="400" height="400"></canvas>
     <div class="score">Score: <span id="score">0</span></div>
+    <div class="note"> Note : Demo designed for desktop ! </div>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -78,7 +90,7 @@
         }
 
         function drawFood() {
-            drawCircle(food.x, food.y, 'black'); // Food styled as a circle similar to Nokia 3310 game
+            drawCircle(food.x, food.y, 'black');
         }
 
         function moveSnake() {
