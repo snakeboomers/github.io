@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Snake Game Teaser</title>
     <style>
+         /* Add the custom font */
+         @font-face {
+            font-family: 'NokiaFont';
+            src: url('fonts/NokiaKokia.ttf') format('truetype');
+        }
         body {
             margin: 0;
             overflow: hidden;
@@ -28,6 +33,7 @@
             transform: translate(-50%, -50%);
             text-align: center;
             font-size: 24px;
+            font-family: 'NokiaFont', sans-serif;
             opacity: 0;
             animation: fadeIn 3s ease-in-out 3s forwards;
         }
@@ -38,6 +44,7 @@
             left: 50%;
             transform: translateX(-50%);
             font-size: 14px;
+            /* font-family: 'NokiaFont', sans-serif; */
             color: white;
             text-align: center;
         }
@@ -55,7 +62,8 @@
 <body>
 
 <div class="message">
-    "Snake game from Nokia is coming in web 3... Stay Tuned!"
+    <!-- "Snake game from Nokia is coming in web 3... Stay Tuned!" -->
+    "SNAKE GAME FROM NOKIA IS COMING IN WEB 3 ... STAY TUNED ! ""
 </div>
 
 <div class="footer">
