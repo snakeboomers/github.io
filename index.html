@@ -5,55 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Snake Game Teaser</title>
     <style>
-         /* Add the custom font */
-         @font-face {
+        @font-face {
             font-family: 'NokiaFont';
             src: url('fonts/NokiaKokia.ttf') format('truetype');
         }
         body {
             margin: 0;
-            overflow: hidden;
-            background-color: black;
             font-family: Arial, sans-serif;
-            color: white;
+            overflow: hidden;
         }
-
+        .teaser {
+            background-color: black;
+            color: white;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
         .snake {
             position: absolute;
             width: 15px;
             height: 15px;
-            background-color: limegreen;
+            background-color: #9EBF83;
             border-radius: 3px;
         }
-
         .message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
             text-align: center;
             font-size: 24px;
+            animation: fadeInOut 6s ease-in-out infinite;
+            z-index: 10;
             font-family: 'NokiaFont', sans-serif;
-            opacity: 0;
-            animation: fadeIn 3s ease-in-out 3s forwards;
         }
-
+        .highlighted-button {
+            margin-top: 20px;
+            padding: 15px 30px;
+            font-size: 20px;
+            background-color: yellow;
+            color: black;
+            border: 3px solid black;
+            cursor: pointer;
+            font-weight: bold;
+            z-index: 10;
+            position: absolute;
+            bottom: 50px;
+        }
         .footer {
             position: absolute;
             bottom: 10px;
             left: 50%;
             transform: translateX(-50%);
             font-size: 14px;
-            /* font-family: 'NokiaFont', sans-serif; */
             color: white;
             text-align: center;
+            z-index: 10;
+            font-family: Arial, sans-serif;
         }
-
-        @keyframes fadeIn {
-            from {
+        @keyframes fadeInOut {
+            0%, 100% {
                 opacity: 0;
             }
-            to {
+            50% {
                 opacity: 1;
             }
         }
@@ -61,16 +75,21 @@
 </head>
 <body>
 
-<div class="message">
-    <!-- "Snake game from Nokia is coming in web 3... Stay Tuned!" -->
-    THE ICONIC SNAKE GAME FROM THE NOKIA 3310 IS COMING TO WEB3 ... STAY TUNED !
-</div>
-
-<div class="footer">
-    Solana CA : 7de4KRedPMUMuWDQYDZEBF94u1xSEN4Prc3q8vZ7pump
+<div class="teaser">
+    <div class="message">
+        THE ICONIC SNAKE GAME FROM THE NOKIA 3310 IS COMING TO WEB3 ... STAY TUNED !
+    </div>
+    <button class="highlighted-button" onclick="goToGamePage()">Try the Demo Game</button>
+    <div class="footer">
+        Solana CA : 7de4KRedPMUMuWDQYDZEBF94u1xSEN4Prc3q8vZ7pump
+    </div>
 </div>
 
 <script>
+    function goToGamePage() {
+        window.location.href = 'snake_game.html';
+    }
+
     const snakeSegments = [];
     const segmentCount = 20;
     const segmentSize = 10;
