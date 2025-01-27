@@ -61,7 +61,7 @@
     <div class="message">PRESS SPACE TO START. ARROW KEYS OR SWIPE TO MOVE</div>
     <canvas id="gameCanvas" width="400" height="400"></canvas>
     <div class="score">Score: <span id="score">0</span></div>
-    <div class="note">Demo designed for desktop and mobile.</div>
+    <div class="note">Use swipe to play in touch screen phone !</div>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -73,20 +73,18 @@
         let score = 0;
         let gameRunning = false;
         let lastRenderTime = 0;
-        const snakeSpeed = 10; // Snake moves every 100ms (adjustable)
-
-        let touchStartX = 0;
-        let touchStartY = 0;
+        const snakeSpeed = 5; // Adjusted speed for smoother control
+        const gridSize = 10; // Reduced step size for finer control
 
         function drawRectangle(x, y, color) {
             ctx.fillStyle = color;
-            ctx.fillRect(x, y, 20, 20);
+            ctx.fillRect(x, y, gridSize, gridSize);
         }
 
         function drawCircle(x, y, color) {
             ctx.fillStyle = color;
             ctx.beginPath();
-            ctx.arc(x + 10, y + 10, 10, 0, Math.PI * 2);
+            ctx.arc(x + gridSize / 2, y + gridSize / 2, gridSize / 2, 0, Math.PI * 2);
             ctx.fill();
         }
 
@@ -112,10 +110,14 @@
         }
 
         function placeFood() {
-            food = {
-                x: Math.floor(Math.random() * canvas.width / 20) * 20,
-                y: Math.floor(Math.random() * canvas.height / 20) * 20,
-            };
+            let newFoodPosition;
+            do {
+                newFoodPosition = {
+                    x: Math.floor(Math.random() * canvas.width / gridSize) * gridSize,
+                    y: Math.floor(Math.random() * canvas.height / gridSize) * gridSize,
+                };
+            } while (snake.some(segment => segment.x === newFoodPosition.x && segment.y === newFoodPosition.y));
+            food = newFoodPosition;
         }
 
         function checkCollision() {
@@ -163,36 +165,11 @@
         }
 
         document.addEventListener('keydown', e => {
-            if (e.key === 'ArrowUp' && direction.y === 0) direction = { x: 0, y: -20 };
-            if (e.key === 'ArrowDown' && direction.y === 0) direction = { x: 0, y: 20 };
-            if (e.key === 'ArrowLeft' && direction.x === 0) direction = { x: -20, y: 0 };
-            if (e.key === 'ArrowRight' && direction.x === 0) direction = { x: 20, y: 0 };
+            if (e.key === 'ArrowUp' && direction.y === 0) direction = { x: 0, y: -gridSize };
+            if (e.key === 'ArrowDown' && direction.y === 0) direction = { x: 0, y: gridSize };
+            if (e.key === 'ArrowLeft' && direction.x === 0) direction = { x: -gridSize, y: 0 };
+            if (e.key === 'ArrowRight' && direction.x === 0) direction = { x: gridSize, y: 0 };
             if (e.key === ' ' && !gameRunning) {
-                gameRunning = true;
-                requestAnimationFrame(gameLoop);
-            }
-        });
-
-        canvas.addEventListener('touchstart', e => {
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-        });
-
-        canvas.addEventListener('touchend', e => {
-            const touchEndX = e.changedTouches[0].clientX;
-            const touchEndY = e.changedTouches[0].clientY;
-            const diffX = touchEndX - touchStartX;
-            const diffY = touchEndY - touchStartY;
-
-            if (Math.abs(diffX) > Math.abs(diffY)) {
-                if (diffX > 0 && direction.x === 0) direction = { x: 20, y: 0 };
-                else if (diffX < 0 && direction.x === 0) direction = { x: -20, y: 0 };
-            } else {
-                if (diffY > 0 && direction.y === 0) direction = { x: 0, y: 20 };
-                else if (diffY < 0 && direction.y === 0) direction = { x: 0, y: -20 };
-            }
-
-            if (!gameRunning) {
                 gameRunning = true;
                 requestAnimationFrame(gameLoop);
             }
@@ -200,5 +177,6 @@
 
         placeFood();
     </script>
-</body>
+
+    </body>
 </html>
