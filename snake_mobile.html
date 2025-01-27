@@ -40,7 +40,13 @@
             color: black;
             margin: 10px 0;
         }
-
+        /* .note {
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            text-align: center;
+            color: black;
+            margin-top: 10px;
+        } */
         .controls {
             position: absolute;
             bottom: 10px;
@@ -82,7 +88,7 @@
     <div class="message" id="startMessage">TOUCH ANYWHERE TO START. USE BUTTONS OR ARROW KEYS TO MOVE</div>
     <canvas id="gameCanvas" width="400" height="400"></canvas>
     <div class="score">Score: <span id="score">0</span></div>
-
+    <!-- <div class="note">Note: Optimized for both desktop and mobile!</div> -->
     <div class="controls">
         <button class="control-button control-up">&#9650;</button>
         <button class="control-button control-left">&#9664;</button>
@@ -203,7 +209,7 @@
         });
 
         placeFood();
-        setInterval(gameLoop, 200);
+        setInterval(gameLoop, 100);
     </script>
 </body>
 </html>
