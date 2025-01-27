@@ -19,7 +19,6 @@
             height: 100vh;
             overflow: hidden;
             position: relative;
-            flex-direction: column;
         }
         canvas {
             background-color: #A1D490;
@@ -29,72 +28,40 @@
         .message {
             font-family: 'NokiaFont', Arial, sans-serif;
             font-size: 20px;
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
             text-align: center;
             color: black;
-            margin-bottom: 10px;
         }
         .score {
             font-family: Arial, sans-serif;
             font-size: 18px;
-            text-align: center;
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
             color: black;
-            margin: 10px 0;
         }
-        /* .note {
+        .note {
             font-family: Arial, sans-serif;
             font-size: 16px;
-            text-align: center;
-            color: black;
-            margin-top: 10px;
-        } */
-        .controls {
             position: absolute;
             bottom: 10px;
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            width: 80%;
-            max-width: 300px;
-        }
-        .control-button {
-            background-color: #4CAF50;
-            border: none;
-            border-radius: 5px;
-            padding: 10px;
-            font-size: 18px;
-            color: white;
+            left: 50%;
+            transform: translateX(-50%);
             text-align: center;
-            user-select: none;
-            cursor: pointer;
-        }
-        .control-button:active {
-            background-color: #388E3C;
-        }
-        .control-up {
-            grid-column: 2 / 3;
-        }
-        .control-left {
-            grid-column: 1 / 2;
-        }
-        .control-right {
-            grid-column: 3 / 4;
-        }
-        .control-down {
-            grid-column: 2 / 3;
+            color: black;
+            max-width: 80%;
         }
     </style>
 </head>
 <body>
-    <div class="message" id="startMessage">TOUCH ANYWHERE TO START. USE BUTTONS OR ARROW KEYS TO MOVE</div>
+    <div class="message">PRESS SPACE TO START. ARROW KEYS OR SWIPE TO MOVE</div>
     <canvas id="gameCanvas" width="400" height="400"></canvas>
     <div class="score">Score: <span id="score">0</span></div>
-    <!-- <div class="note">Note: Optimized for both desktop and mobile!</div> -->
-    <div class="controls">
-        <button class="control-button control-up">&#9650;</button>
-        <button class="control-button control-left">&#9664;</button>
-        <button class="control-button control-right">&#9654;</button>
-        <button class="control-button control-down">&#9660;</button>
-    </div>
+    <div class="note">Demo designed for desktop and mobile.</div>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -105,6 +72,11 @@
         let food = { x: 100, y: 100 };
         let score = 0;
         let gameRunning = false;
+        let lastRenderTime = 0;
+        const snakeSpeed = 10; // Snake moves every 100ms (adjustable)
+
+        let touchStartX = 0;
+        let touchStartY = 0;
 
         function drawRectangle(x, y, color) {
             ctx.fillStyle = color;
@@ -123,7 +95,7 @@
         }
 
         function drawFood() {
-            drawCircle(food.x, food.y, 'black');
+            drawCircle(food.x, food.y, 'green');
         }
 
         function moveSnake() {
@@ -168,17 +140,26 @@
             document.getElementById('score').textContent = score;
             placeFood();
             gameRunning = false;
-            document.getElementById('startMessage').style.display = 'block';
         }
 
-        function gameLoop() {
+        function gameLoop(currentTime) {
             if (!gameRunning) return;
+
+            const timeSinceLastRender = currentTime - lastRenderTime;
+            if (timeSinceLastRender < 1000 / snakeSpeed) {
+                requestAnimationFrame(gameLoop);
+                return;
+            }
+
+            lastRenderTime = currentTime;
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             drawSnake();
             drawFood();
             moveSnake();
             checkCollision();
+
+            requestAnimationFrame(gameLoop);
         }
 
         document.addEventListener('keydown', e => {
@@ -186,30 +167,38 @@
             if (e.key === 'ArrowDown' && direction.y === 0) direction = { x: 0, y: 20 };
             if (e.key === 'ArrowLeft' && direction.x === 0) direction = { x: -20, y: 0 };
             if (e.key === 'ArrowRight' && direction.x === 0) direction = { x: 20, y: 0 };
-        });
-
-        document.addEventListener('click', () => {
-            if (!gameRunning) {
+            if (e.key === ' ' && !gameRunning) {
                 gameRunning = true;
-                document.getElementById('startMessage').style.display = 'none';
+                requestAnimationFrame(gameLoop);
             }
         });
 
-        document.querySelector('.control-up').addEventListener('click', () => {
-            if (direction.y === 0) direction = { x: 0, y: -20 };
+        canvas.addEventListener('touchstart', e => {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
         });
-        document.querySelector('.control-down').addEventListener('click', () => {
-            if (direction.y === 0) direction = { x: 0, y: 20 };
-        });
-        document.querySelector('.control-left').addEventListener('click', () => {
-            if (direction.x === 0) direction = { x: -20, y: 0 };
-        });
-        document.querySelector('.control-right').addEventListener('click', () => {
-            if (direction.x === 0) direction = { x: 20, y: 0 };
+
+        canvas.addEventListener('touchend', e => {
+            const touchEndX = e.changedTouches[0].clientX;
+            const touchEndY = e.changedTouches[0].clientY;
+            const diffX = touchEndX - touchStartX;
+            const diffY = touchEndY - touchStartY;
+
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                if (diffX > 0 && direction.x === 0) direction = { x: 20, y: 0 };
+                else if (diffX < 0 && direction.x === 0) direction = { x: -20, y: 0 };
+            } else {
+                if (diffY > 0 && direction.y === 0) direction = { x: 0, y: 20 };
+                else if (diffY < 0 && direction.y === 0) direction = { x: 0, y: -20 };
+            }
+
+            if (!gameRunning) {
+                gameRunning = true;
+                requestAnimationFrame(gameLoop);
+            }
         });
 
         placeFood();
-        setInterval(gameLoop, 100);
     </script>
 </body>
 </html>
