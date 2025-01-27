@@ -58,10 +58,10 @@
     </style>
 </head>
 <body>
-    <div class="message">PRESS SPACE TO START. ARROW KEYS OR SWIPE TO MOVE</div>
+    <div class="message">PRESS SPACE TO START. ARROW KEYS TO MOVE</div>
     <canvas id="gameCanvas" width="400" height="400"></canvas>
     <div class="score">Score: <span id="score">0</span></div>
-    <div class="note">Use swipe to play in touch screen phone !</div>
+    <div class="note">Swipe to play in touch screen mobile device!</div>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -73,8 +73,11 @@
         let score = 0;
         let gameRunning = false;
         let lastRenderTime = 0;
-        const snakeSpeed = 5; // Adjusted speed for smoother control
-        const gridSize = 10; // Reduced step size for finer control
+        const snakeSpeed = 5;
+        const gridSize = 20;
+
+        let touchStartX = 0;
+        let touchStartY = 0;
 
         function drawRectangle(x, y, color) {
             ctx.fillStyle = color;
@@ -175,8 +178,32 @@
             }
         });
 
+        canvas.addEventListener('touchstart', e => {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        });
+
+        canvas.addEventListener('touchend', e => {
+            const touchEndX = e.changedTouches[0].clientX;
+            const touchEndY = e.changedTouches[0].clientY;
+            const diffX = touchEndX - touchStartX;
+            const diffY = touchEndY - touchStartY;
+
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                if (diffX > 0 && direction.x === 0) direction = { x: gridSize, y: 0 };
+                else if (diffX < 0 && direction.x === 0) direction = { x: -gridSize, y: 0 };
+            } else {
+                if (diffY > 0 && direction.y === 0) direction = { x: 0, y: gridSize };
+                else if (diffY < 0 && direction.y === 0) direction = { x: 0, y: -gridSize };
+            }
+
+            if (!gameRunning) {
+                gameRunning = true;
+                requestAnimationFrame(gameLoop);
+            }
+        });
+
         placeFood();
     </script>
-
-    </body>
+</body>
 </html>
